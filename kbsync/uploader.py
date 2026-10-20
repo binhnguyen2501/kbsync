@@ -10,7 +10,7 @@ from dataclasses import dataclass, field
 
 from openai import OpenAI
 
-from .scraper import Article
+from .converter import Article
 
 log = logging.getLogger(__name__)
 

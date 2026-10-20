@@ -1,4 +1,4 @@
-from kbsync.scraper import slugify, to_markdown
+from kbsync.converter import slugify, to_markdown
 
 BASE = "https://support.example.com"
 

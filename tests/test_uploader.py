@@ -1,7 +1,7 @@
 from types import SimpleNamespace
 
 from kbsync import uploader
-from kbsync.scraper import Article
+from kbsync.converter import Article
 from kbsync.uploader import estimate_chunks, sync
 
 

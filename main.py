@@ -8,8 +8,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 
-from dotenv import load_dotenv
-
+from kbsync.config import Settings
 from kbsync.scraper import scrape
 
 OUT_DIR = Path(os.getenv("OUTPUT_DIR", "articles"))
@@ -17,7 +16,7 @@ RUN_LOG = Path(os.getenv("RUN_LOG", "logs/last_run.json"))
 
 
 def main() -> int:
-    load_dotenv()
+    settings = Settings.from_env()
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s: %(message)s")
     log = logging.getLogger("main")
 
@@ -26,8 +25,7 @@ def main() -> int:
     args = parser.parse_args()
 
     started = time.monotonic()
-    base_url = os.getenv("ZENDESK_BASE_URL", "https://support.optisigns.com")
-    articles = scrape(base_url, limit=int(os.getenv("MAX_ARTICLES", "0")))
+    articles = scrape(settings.zendesk_base_url, limit=settings.max_articles)
 
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     for a in articles:
@@ -36,18 +34,15 @@ def main() -> int:
     if args.scrape_only:
         return 0
 
-    api_key = os.getenv("OPENAI_API_KEY") or os.getenv("API_KEY")
-    if not api_key:
+    if not settings.api_key:
         log.error("Set OPENAI_API_KEY (or API_KEY)")
         return 2
 
     from openai import OpenAI
     from kbsync.uploader import get_or_create_vector_store, sync
 
-    client = OpenAI(api_key=api_key)
-    store_id = get_or_create_vector_store(
-        client, os.getenv("VECTOR_STORE_ID") or None, os.getenv("VECTOR_STORE_NAME", "optibot-kb")
-    )
+    client = OpenAI(api_key=settings.api_key)
+    store_id = get_or_create_vector_store(client, settings.vector_store_id, settings.vector_store_name)
     result = sync(client, store_id, articles)
 
     summary = {
