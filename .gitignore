@@ -3,3 +3,5 @@
 __pycache__/
 articles/
 logs/
+annotated_vi/
+.DS_Store
