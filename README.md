@@ -70,3 +70,5 @@ The tests cover HTML → Markdown cleaning (headings, code, links, embeds, callo
 ## Sample answer
 
 ![OptiBot answering "How do I add a YouTube video?" with a cited Article URL](docs/screenshot.png)
+
+**Demo video:** https://drive.google.com/file/d/1Tj6iNBeSaqz-HY_644rQQoGBaSGnQM-6/view
